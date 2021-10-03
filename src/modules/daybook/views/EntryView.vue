@@ -39,14 +39,15 @@
 
   <Fab icon="fa-save" @on:click="saveEntry" />
 
-  <!-- <img
-    src="https://upload.wikimedia.org/wikipedia/commons/3/35/Neckertal_20150527-6384.jpg"
+  <img
+    v-if="entry.picture"
+    :src="entry.picture"
     alt="entry-picture"
     class="img-thumbnail"
-  /> -->
+  />
 
   <img
-    v-if="localImage"
+    v-if="localImage && !localImage"
     :src="localImage"
     alt="entry-picture"
     class="img-thumbnail"
@@ -58,6 +59,7 @@ import { defineAsyncComponent } from "vue";
 import getDayMonthYear from "../helpers/getDayMonthYear";
 import { mapActions, mapGetters } from "vuex";
 import Swal from "sweetalert2";
+import uploadImage from "../helpers/uploadImage";
 
 export default {
   props: {
@@ -118,6 +120,10 @@ export default {
           allowOutsideClick: false,
         });
         Swal.showLoading();
+
+        const picture = await uploadImage(this.file);
+        this.entry.picture = picture;
+
         // actualizar
         await this.updateEntry(this.entry);
       } else {
@@ -125,6 +131,7 @@ export default {
         const id = await this.createEntry(this.entry);
         this.$router.push({ name: "entry", params: { id } });
       }
+      this.file = null;
       Swal.fire("Guardado", "Entrada registrada con exito", "success");
     },
 
