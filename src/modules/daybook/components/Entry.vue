@@ -1,26 +1,77 @@
 <template>
   <div
-    @click="$router.push({ name: 'entry', params: { id: 10 } })"
+    @click="$router.push({ name: 'entry', params: { id: entry.id } })"
     class="entry-container mb-3 pointer p-2"
   >
     <!-- Title -->
     <div class="entry-title d-flex">
-      <span class="text-success fs-5 f2-bold">12</span>
-      <span class="mx-1 fs-5">Septiembre</span>
-      <span class="mx-1 fw-light">2021, domingo</span>
+      <span class="text-success fs-5 f2-bold">{{ day }}</span>
+      <span class="mx-1 fs-5">{{ month }}</span>
+      <span class="mx-1 fw-light">{{ yearDay }}</span>
     </div>
 
     <div class="entry-description">
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Excepturi eaque
-      esse cumque, assumenda illo explicabo cupiditate ipsa, ab totam quae
-      expedita labore molestiae officiis beatae deserunt illum atque aperiam
-      exercitationem?
+      {{ shortText }}
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+const months = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+const days = [
+  "Domingo",
+  "Lunes",
+  "Martes",
+  "Miércoles",
+  "Jueves",
+  "Viernes",
+  "Sábado",
+];
+
+export default {
+  props: {
+    entry: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  computed: {
+    shortText() {
+      return this.entry.text.length > 130
+        ? this.entry.text.substring(0, 130) + "..."
+        : this.entry.text;
+    },
+
+    day() {
+      const date = new Date(this.entry.date);
+      return date.getDate();
+    },
+
+    month() {
+      const date = new Date(this.entry.date);
+      return months[date.getMonth()];
+    },
+
+    yearDay() {
+      const date = new Date(this.entry.date);
+      return `${date.getFullYear()}, ${days[date.getDay()]}`;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
